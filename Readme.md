@@ -25,3 +25,8 @@ credit-risk-prediction/
 │   └── credit_risk_model.pkl
 └── .github/                 # CI (e.g. GitHub Actions) for tests & notebooks to HTML
     └── workflows/
+
+
+# How to create requirements.txt ?
+`pip install Your_Libraries`
+`pip freeze > requirements.txt`
