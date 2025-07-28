@@ -112,24 +112,10 @@ uvicorn src.api.main:app --reload
   - Preview data
   - Click 'Get Prediction' to send file to API and display results
 
-# Docker Deployment
-
-## 1. Build Docker Image
-```bash
-docker build -t credit-risk-api .
-```
-
-## 2. Run Docker Container
-```bash
-docker run -p 8000:8000 credit-risk-api
-```
-
-- The API will be available at `http://127.0.0.1:8000` inside the container.
-
 # AWS Deployment (EC2 Example)
-1. Launch an EC2 instance with Docker installed.
+1. Launch an EC2 instance with Python installed.
 2. Clone this repository to the instance.
-3. Build and run the Docker image as above.
+3. Install dependencies and run the API as described above.
 4. Open port 8000 in your EC2 security group.
 5. Access the API via your EC2 public IP.
 

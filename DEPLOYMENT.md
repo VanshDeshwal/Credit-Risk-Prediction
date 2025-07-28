@@ -79,7 +79,7 @@ git push origin main
 ## Automatic Updates
 
 The deployment is configured to automatically update when you push changes to:
-- API: Changes to `src/api/`, `model_artifacts/`, `api_requirements.txt`, or `Dockerfile.api`
+- API: Changes to `src/api/`, `model_artifacts/`, or `api_requirements.txt`
 
 ## Managing Multiple Applications
 
