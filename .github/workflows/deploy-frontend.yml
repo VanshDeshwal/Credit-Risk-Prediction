@@ -1,0 +1,48 @@
+name: Deploy Frontend to Azure Container Apps
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'frontend_app.py'
+      - 'frontend_requirements.txt'
+      - 'Dockerfile.frontend'
+      - '.github/workflows/deploy-frontend.yml'
+  workflow_dispatch:
+
+env:
+  AZURE_CONTAINER_APP_NAME: credit-risk-frontend
+  AZURE_RESOURCE_GROUP: rg-credit-risk
+  AZURE_CONTAINER_REGISTRY: crcreditrisk
+  AZURE_CONTAINER_APP_ENVIRONMENT: env-credit-risk
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Log in to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Log in to Azure Container Registry
+      run: |
+        az acr login --name ${{ env.AZURE_CONTAINER_REGISTRY }}
+
+    - name: Build and push Docker image
+      run: |
+        IMAGE_TAG=${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.AZURE_CONTAINER_APP_NAME }}:${{ github.sha }}
+        docker build -f Dockerfile.frontend -t $IMAGE_TAG .
+        docker push $IMAGE_TAG
+
+    - name: Deploy to Azure Container Apps
+      run: |
+        az containerapp update \
+          --name ${{ env.AZURE_CONTAINER_APP_NAME }} \
+          --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+          --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.AZURE_CONTAINER_APP_NAME }}:${{ github.sha }} \
+          --set-env-vars API_URL=https://credit-risk-api.azurecontainerapps.io

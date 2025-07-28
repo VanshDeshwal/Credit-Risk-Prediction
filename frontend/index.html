@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Risk Prediction | AI-Powered Risk Assessment</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="description" content="Advanced AI-powered credit risk prediction system. Upload Excel files and get instant risk assessments with detailed analytics.">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <h1>CreditPredict AI</h1>
+            </div>
+            <nav class="nav">
+                <a href="#upload" class="nav-link">Upload</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#about" class="nav-link">About</a>
+            </nav>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h2 class="hero-title">AI-Powered Credit Risk Assessment</h2>
+                <p class="hero-subtitle">Upload your Excel data and get instant, accurate credit risk predictions using advanced machine learning algorithms.</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">4</span>
+                        <span class="stat-label">Risk Categories</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">99%</span>
+                        <span class="stat-label">Accuracy</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">< 10s</span>
+                        <span class="stat-label">Processing Time</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upload Section -->
+        <section id="upload" class="upload-section">
+            <div class="upload-container">
+                <h3 class="section-title">Upload Your Data</h3>
+                <p class="section-subtitle">Upload an Excel file (.xlsx) containing customer data for risk assessment</p>
+                
+                <!-- Upload Area -->
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-content">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <h4>Drop your Excel file here</h4>
+                        <p>or click to browse</p>
+                        <span class="file-types">Supports .xlsx files only</span>
+                    </div>
+                    <input type="file" id="fileInput" accept=".xlsx" hidden>
+                </div>
+
+                <!-- File Info -->
+                <div class="file-info" id="fileInfo" style="display: none;">
+                    <div class="file-details">
+                        <i class="fas fa-file-excel"></i>
+                        <div class="file-text">
+                            <span class="file-name" id="fileName"></span>
+                            <span class="file-size" id="fileSize"></span>
+                        </div>
+                        <button class="remove-file" id="removeFile">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Predict Button -->
+                <button class="predict-btn" id="predictBtn" disabled>
+                    <i class="fas fa-brain"></i>
+                    Analyze Risk
+                </button>
+            </div>
+        </section>
+
+        <!-- Loading -->
+        <div class="loading" id="loading" style="display: none;">
+            <div class="loading-content">
+                <div class="loader"></div>
+                <h4>Analyzing your data...</h4>
+                <p>Our AI model is processing your file and generating risk predictions.</p>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <section class="results-section" id="resultsSection" style="display: none;">
+            <div class="results-container">
+                <h3 class="section-title">Risk Assessment Results</h3>
+                
+                <!-- Summary Cards -->
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="card-icon low-risk">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-number" id="p1Count">0</span>
+                            <span class="card-label">P1 - Low Risk</span>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="card-icon medium-risk">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-number" id="p2Count">0</span>
+                            <span class="card-label">P2 - Medium Risk</span>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="card-icon high-risk">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-number" id="p3Count">0</span>
+                            <span class="card-label">P3 - High Risk</span>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="card-icon very-high-risk">
+                            <i class="fas fa-ban"></i>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-number" id="p4Count">0</span>
+                            <span class="card-label">P4 - Very High Risk</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Container -->
+                <div class="chart-container">
+                    <canvas id="riskChart"></canvas>
+                </div>
+
+                <!-- Detailed Results Table -->
+                <div class="table-container">
+                    <h4>Detailed Predictions</h4>
+                    <div class="table-wrapper">
+                        <table class="results-table" id="resultsTable">
+                            <thead>
+                                <tr>
+                                    <th>Record #</th>
+                                    <th>Risk Category</th>
+                                    <th>Risk Level</th>
+                                    <th>Recommendation</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <!-- Results will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Export Options -->
+                <div class="export-options">
+                    <button class="export-btn" id="exportCSV">
+                        <i class="fas fa-download"></i>
+                        Export CSV
+                    </button>
+                    <button class="export-btn" id="exportJSON">
+                        <i class="fas fa-code"></i>
+                        Export JSON
+                    </button>
+                    <button class="reset-btn" id="resetBtn">
+                        <i class="fas fa-refresh"></i>
+                        New Analysis
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features-section">
+            <div class="features-container">
+                <h3 class="section-title">Key Features</h3>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h4>AI-Powered Analysis</h4>
+                        <p>Advanced machine learning algorithms trained on extensive credit data for accurate risk assessment.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h4>Real-time Processing</h4>
+                        <p>Get instant results with processing times under 10 seconds for most datasets.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <h4>Visual Analytics</h4>
+                        <p>Interactive charts and detailed breakdowns to understand risk distribution.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <h4>Export Results</h4>
+                        <p>Download results in CSV or JSON format for further analysis and reporting.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>CreditPredict AI</h4>
+                    <p>Advanced credit risk assessment powered by machine learning.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Built by Vansh Deshwal</p>
+                    <a href="https://vanshdeshwal.dev" target="_blank">vanshdeshwal.dev</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CreditPredict AI. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal" id="errorModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Error</h4>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessage">An error occurred while processing your request.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

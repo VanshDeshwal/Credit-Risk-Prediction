@@ -1,7 +1,8 @@
-# Credit Risk Model
-predicts the risk of giving credit to a person in 4 levels, P1 P2 P3 P4
+# Credit Risk Prediction
 
-# Directory structure
+A machine learning model for predicting credit risk in 4 levels (P1, P2, P3, P4).
+
+## 📁 Project Structure
 
 ```bash
 credit-risk-prediction/
