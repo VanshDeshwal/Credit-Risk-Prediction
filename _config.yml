@@ -1,24 +1,8 @@
-# GitHub Pages Configuration
-# This file enables GitHub Pages for the frontend directory
-
-# Build settings
-source: frontend
-destination: _site
-
-# Jekyll configuration
-plugins:
-  - jekyll-sitemap
-  - jekyll-seo-tag
-
-# SEO settings
+# GitHub Pages configuration for frontend deployment
 title: "CreditPredict AI - AI-Powered Credit Risk Assessment"
 description: "Advanced machine learning application for predicting credit risk in 4 levels (P1, P2, P3, P4). Upload Excel files and get instant risk assessments."
 url: "https://creditpredict.vanshdeshwal.dev"
 baseurl: ""
-
-# Social media
-github_username: VanshDeshwal
-linkedin_username: vansh-deshwal
 
 # Exclude files from processing
 exclude:
@@ -26,3 +10,10 @@ exclude:
   - .gitignore
   - node_modules/
   - package*.json
+  - "*.py"
+  - "*.txt"
+  - "src/"
+  - "data/"
+  - "notebooks/"
+  - "model_artifacts/"
+  - "azure/"
