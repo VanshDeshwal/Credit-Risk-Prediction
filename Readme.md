@@ -100,17 +100,16 @@ uvicorn src.api.main:app --reload
   print(r.json())
   ```
 
-# Streamlit Frontend
+# Frontend
 
-- File: `src/api/frontend.py`
-- Usage:
-  ```bash
-  streamlit run src/api/frontend.py
-  ```
-- Features:
-  - Upload an Excel file
-  - Preview data
-  - Click 'Get Prediction' to send file to API and display results
+The project includes a modern web frontend deployed on GitHub Pages:
+- **Live URL**: https://creditpredict.vanshdeshwal.dev
+- **Features**:
+  - Drag & drop Excel file upload
+  - Real-time data preview
+  - Interactive prediction results with charts
+  - CSV/JSON export functionality
+  - Responsive design for mobile and desktop
 
 # AWS Deployment (EC2 Example)
 1. Launch an EC2 instance with Python installed.
