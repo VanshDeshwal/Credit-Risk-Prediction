@@ -1,16 +1,30 @@
 
 from fastapi import FastAPI, UploadFile
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import pickle
 import pandas as pd
 from io import BytesIO
+from pathlib import Path
 
-# import the ml model
-with open('model.pkl', 'rb') as f:
+BASE_DIR = Path(__file__).resolve().parent
+MODEL_PATH = BASE_DIR / 'model.pkl'
+
+# import the ml model (robust path)
+with open(MODEL_PATH, 'rb') as f:
     model = pickle.load(f)
 
 app = FastAPI()
+
+# Enable CORS for local frontend development and broad compatibility
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust to specific domains in production
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # machine readable
 @app.get("/health")

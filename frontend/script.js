@@ -1,5 +1,16 @@
 // Configuration
-const API_BASE_URL = 'https://credit-risk-api.azurecontainerapps.io'; // Replace with your actual API URL
+// Dynamically select API base URL: if served locally (file:// or localhost), use local FastAPI, else use deployed URL.
+const DEPLOYED_API_URL = 'https://credit-risk-api.azurecontainerapps.io';
+const LOCAL_API_URL = 'http://127.0.0.1:8000';
+let API_BASE_URL = DEPLOYED_API_URL;
+let API_DOCS_URL = `${DEPLOYED_API_URL}/docs`;
+try {
+    const isLocalFrontEnd = ['localhost', '127.0.0.1'].includes(location.hostname) || location.protocol === 'file:';
+    if (isLocalFrontEnd) {
+        API_BASE_URL = LOCAL_API_URL;
+        API_DOCS_URL = `${LOCAL_API_URL}/docs`;
+    }
+} catch (e) { /* ignore */ }
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 // DOM Elements
@@ -18,6 +29,7 @@ const errorMessage = document.getElementById('errorMessage');
 const resetBtn = document.getElementById('resetBtn');
 const exportCSV = document.getElementById('exportCSV');
 const exportJSON = document.getElementById('exportJSON');
+const apiStatus = document.getElementById('apiStatus');
 
 // Global variables
 let currentFile = null;
@@ -75,18 +87,37 @@ function initializeEventListeners() {
 
 // Check API health
 async function checkApiHealth() {
+    if (!apiStatus) return;
+    apiStatus.classList.remove('connected','disconnected','partial');
+    apiStatus.classList.add('partial');
+    apiStatus.textContent = 'Checking';
+    apiStatus.href = '#';
     try {
-        const response = await fetch(`${API_BASE_URL}/health`);
-        if (!response.ok) {
-            throw new Error('API is not responding');
-        }
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 4000);
+        const response = await fetch(`${API_BASE_URL}/health`, { signal: controller.signal });
+        clearTimeout(timeout);
+        if (!response.ok) throw new Error('bad status');
         const health = await response.json();
-        console.log('API Health:', health);
-    } catch (error) {
-        console.warn('API health check failed:', error);
-        // You might want to show a warning to the user here
+        const ok = health?.status === 'OK' && health?.model_loaded;
+        apiStatus.classList.remove('partial');
+        apiStatus.classList.add(ok ? 'connected' : 'partial');
+    apiStatus.textContent = ok ? 'Online' : 'Degraded';
+        apiStatus.href = API_DOCS_URL;
+        apiStatus.title = ok ? 'View API docs' : 'API reachable but may be degraded';
+    } catch (err) {
+        apiStatus.classList.remove('partial');
+        apiStatus.classList.add('disconnected');
+    apiStatus.textContent = 'Offline';
+        // If frontend is remote and local API offline, keep docs link to deployed if any
+        apiStatus.href = API_DOCS_URL;
+        apiStatus.title = 'API not reachable';
+        console.warn('API health check failed:', err);
     }
 }
+
+// periodic health refresh every 60s
+setInterval(checkApiHealth, 60000);
 
 // Drag and drop handlers
 function handleDragOver(e) {
